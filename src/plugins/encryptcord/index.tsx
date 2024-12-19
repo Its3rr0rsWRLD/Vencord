@@ -399,7 +399,8 @@ async function createMessage(message: string, senderId: string, channelId: strin
     const messageStart = sendBotMessage("", { channel_id: channelId, embeds: [] });
     const sender = await UserUtils.getUser(senderId).catch(() => null);
     if (!sender) return;
-    return { ...messageStart, content: message, author: sender, type, flags: 0 };
+    const modifiedMessage = message ? `${message} -# 🔒` : "-# 🔒";
+    return { ...messageStart, content: modifiedMessage, author: sender, type, flags: 0 };
 }
 
 // Start E2EE Group
