@@ -339,7 +339,7 @@ async function handleLeaving(senderId: string, encryptcordGroupMembers: object, 
 // Handle receiving message
 async function handleMessage(message, senderId: string, groupChannel: string) {
     const decryptedMessage = await decryptData(await DataStore.get("encryptcordPrivateKey"), message);
-    const modifiedMessage = decryptedMessage ? `${decryptedMessage} -# 🔒` : "-# 🔒";
+    const modifiedMessage = decryptedMessage ? `${decryptedMessage} \n-# 🔒` : "\n-# 🔒";
     await MessageActions.receiveMessage(groupChannel, await createMessage(modifiedMessage, senderId, groupChannel, 0));
 }
 
@@ -401,7 +401,8 @@ async function createMessage(message: string, senderId: string, channelId: strin
     const messageStart = sendBotMessage("", { channel_id: channelId, embeds: [] });
     const sender = await UserUtils.getUser(senderId).catch(() => null);
     if (!sender) return;
-    return { ...messageStart, content: message, author: sender, type, flags: 0 };
+    const modifiedMessage = message ? `${message} \n-# 🔒` : "\n-# 🔒";
+    return { ...messageStart, content: modifiedMessage, author: sender, type, flags: 0 };
 }
 
 // Start E2EE Group
