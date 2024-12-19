@@ -339,7 +339,8 @@ async function handleLeaving(senderId: string, encryptcordGroupMembers: object, 
 // Handle receiving message
 async function handleMessage(message, senderId: string, groupChannel: string) {
     const decryptedMessage = await decryptData(await DataStore.get("encryptcordPrivateKey"), message);
-    await MessageActions.receiveMessage(groupChannel, await createMessage(decryptedMessage, senderId, groupChannel, 0));
+    const modifiedMessage = decryptedMessage ? `${decryptedMessage} -# 🔒` : "-# 🔒";
+    await MessageActions.receiveMessage(groupChannel, await createMessage(modifiedMessage, senderId, groupChannel, 0));
 }
 
 // Handle receiving group data
