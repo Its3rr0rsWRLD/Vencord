@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { addChatBarButton, ChatBarButton, removeChatBarButton } from "@api/ChatButtons";
+import { addChatBarButton, ChatBarButton } from "@api/ChatButtons";
 import {
     ApplicationCommandInputType,
     ApplicationCommandOptionType,
@@ -12,6 +12,7 @@ import {
 } from "@api/Commands";
 import * as DataStore from "@api/DataStore";
 import { addPreSendListener, removePreSendListener, SendListener } from "@api/MessageEvents";
+import { removeButton } from "@api/MessagePopover";
 import { Devs } from "@utils/constants";
 import { sleep } from "@utils/misc";
 import definePlugin from "@utils/types";
@@ -264,7 +265,7 @@ export default definePlugin({
         await DataStore.set("encryptcordGroupMembers", {});
     },
     async stop() {
-        removeChatBarButton("Encryptcord");
+        removeButton("Encryptcord");
         if (await DataStore.get("encryptcordGroup") === true) {
             await leave("", { channel: { id: await DataStore.get("encryptcordChannelId") } });
         }
@@ -399,8 +400,7 @@ async function createMessage(message: string, senderId: string, channelId: strin
     const messageStart = sendBotMessage("", { channel_id: channelId, embeds: [] });
     const sender = await UserUtils.getUser(senderId).catch(() => null);
     if (!sender) return;
-    const modifiedMessage = message ? `${message} -# 🔒` : "-# 🔒";
-    return { ...messageStart, content: modifiedMessage, author: sender, type, flags: 0 };
+    return { ...messageStart, content: message, author: sender, type, flags: 0 };
 }
 
 // Start E2EE Group
